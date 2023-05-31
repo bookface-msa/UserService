@@ -1,26 +1,28 @@
 package com.example.demo.user;
-
+//
+//import com.example.demo.follow.followRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path="api/v1/user")
 public class UserController {
 @Autowired
 private  UserRepository userRepository;
+//@Autowired
+//private followRepository followRepositery ;
 
-
-
-    @GetMapping
+    @GetMapping()
     public List<User> getUsers(){
-      return userRepository.findAll();
+
+        return userRepository.findAll();
     }
 
     @GetMapping("/id")
     public User getUserbyidp(long id){
+
         return userRepository.findById(id).orElseThrow(()->new IllegalStateException("getuserexecp"));
     }
 
@@ -36,11 +38,14 @@ private  UserRepository userRepository;
 
     @GetMapping("/auth")
     public boolean authenticate(@RequestParam String username,@RequestParam String password){
-         User user=userRepository.findByUsername(username).get(0);
+         User user=userRepository.findByUsername(username).get();
          return user.getPassword().equals(password);
     }
     @PostMapping()
     public User add(@RequestBody User user ){
+        user.setNum_following(0);
+        user.setNum_followers(0);
+        user.setNum_likes(0);
         return userRepository.save(user);
     }
 
