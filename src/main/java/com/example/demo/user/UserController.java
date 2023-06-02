@@ -1,18 +1,28 @@
 package com.example.demo.user;
 //
 //import com.example.demo.follow.followRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.Elastic.Elasticuser;
+import com.example.demo.Elastic.mqconfig;
+import com.example.demo.follow.followRepository;
+import com.example.demo.user.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.example.demo.firebase.FirebaseInterface;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
 @RequestMapping(path="api/v1/user")
+@RequiredArgsConstructor
 public class UserController {
-@Autowired
-private  UserRepository userRepository;
-//@Autowired
-//private followRepository followRepositery ;
+private final UserRepository userRepository;
+private final followRepository followRepositery ;
+private final UserService userservice;
+private final FirebaseInterface IFirebase;
+private final RabbitTemplate template;
 
     @GetMapping()
     public List<User> getUsers(){
@@ -21,54 +31,30 @@ private  UserRepository userRepository;
     }
 
     @GetMapping("/id")
-    public User getUserbyidp(long id){
-
-        return userRepository.findById(id).orElseThrow(()->new IllegalStateException("getuserexecp"));
-    }
-
-
     public User getUserbyid(long id){
-        return userRepository.findById(id).orElseThrow(()->new IllegalStateException("getuserexec"));
+
+        return userservice.getUserbyid(id);
     }
 
     @GetMapping("/email")
-    public User getUserbyemail(String email){
-        return userRepository.findByEmail(email).get(0);
+    public User getUserbyemail(String email) throws Exception {
+        return userservice.getUserbyemail(email);
     }
 
-    @GetMapping("/auth")
-    public boolean authenticate(@RequestParam String username,@RequestParam String password){
-         User user=userRepository.findByUsername(username).get();
-         return user.getPassword().equals(password);
-    }
-    @PostMapping()
-    public User add(@RequestBody User user ){
-        user.setNum_following(0);
-        user.setNum_followers(0);
-        user.setNum_likes(0);
-        return userRepository.save(user);
+    @GetMapping("/username")
+    public User getUserbyusername(String username)  {
+        return userservice.getUserbyusername(username);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/delete")
     public void delete(@RequestParam long id ){
-         userRepository.delete(getUserbyid(id));
+         userservice.delete(id);
+
     }
 
-    @PutMapping()
+    @PutMapping("/update")
     public User update(@RequestBody User uuser){
-      User user=userRepository.findById(uuser.getId()).orElseThrow(()->
-          new IllegalStateException("excupdate")
-      );
-        user.setBio(uuser.getBio());
-        user.setEmail(uuser.getEmail());
-        user.setNum_followers(uuser.getNum_followers());
-        user.setNum_following(uuser.getNum_following());
-        user.setNum_likes(uuser.getNum_likes());
-        user.setFirstname(uuser.getFirstname());
-        user.setLastname(uuser.getLastname());
-        user.setUsername(uuser.getUsername());
-        user.setPassword(uuser.getPassword());
-        return userRepository.save(user);
+        return userservice.update(uuser);
     }
 
 

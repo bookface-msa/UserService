@@ -3,6 +3,7 @@ package com.example.demo.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,13 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 
 @Data
 @Entity
 @Table(name="users")
 @Builder
+@AllArgsConstructor
 public class User  implements UserDetails {
 
 
@@ -52,6 +53,10 @@ public class User  implements UserDetails {
    @JsonProperty("num_likes")
    @Column(name="num_likes", nullable = false)
     private Integer num_likes;
+
+    @JsonProperty("photoURL")
+    @Column(name="photoURL", nullable = false)
+    private String photoURL;
 
     @JsonProperty("role")
     @Column(name="role", nullable = false)
@@ -100,6 +105,20 @@ public class User  implements UserDetails {
         this.num_likes = num_likes;
         this.role = role;
     }
+
+    public User(userRequest userrequest){
+        this.firstname = userrequest.getFirstname();
+        this.lastname = userrequest.getLastname();
+        this.username = userrequest.getUsername();
+        this.email = userrequest.getEmail();
+        this.password = userrequest.getPassword();
+        this.bio = userrequest.getBio();
+        this.num_followers = 0;
+        this.num_following = 0;
+        this.num_likes = 0;
+        this.role = Role.USER;
+
+    }
 //    public User(Optional<User> u) {
 //        this.id = u.get().getId();
 //        this.firstname = u.get().getFirstname();
@@ -144,5 +163,7 @@ public class User  implements UserDetails {
     public String getPassword(){
         return password;
     }
+
+
 
 }

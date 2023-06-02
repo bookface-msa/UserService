@@ -23,8 +23,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
     //binds jwt to the rest of the application
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-         http.authorizeHttpRequests((authz) -> authz
-                               .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+         http.csrf(csrf -> csrf.disable())
+                 .cors(cors->cors.disable())
+                 .authorizeHttpRequests((authz) -> authz
+                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                          .requestMatchers("/api/v1/auth/register","/api/v1/auth/login")//white list (register,login)
                          .permitAll()
                          .anyRequest()//all other requests
@@ -40,10 +42,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
         //edited due to deprecation
   }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/v1/auth/register","/api/v1/auth/login");//white list (register,login);
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers("/api/v1/auth/register","/api/v1/auth/login");//white list (register,login);
+//    }
 
 //    {
 //        "username":"Shaalan800",
