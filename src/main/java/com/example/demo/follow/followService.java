@@ -23,6 +23,10 @@ public class followService {
     public follow follow(followRequest fr,HttpServletRequest request) throws Exception {
         long user1id= Long.parseLong(fr.getUserid());
        long user2id = Long.parseLong(fr.getFollowingid());
+        long id=  userService.extractID(request);
+        if(id!=user1id){
+            throw new Exception("Wrong user-follow");
+        }
         follow follow=new follow(user1id, user2id);
         boolean check=followRepository.existsBymid(follow.getMid());
         System.out.println(check);
@@ -34,10 +38,7 @@ public class followService {
                 System.out.println("user: "+user1id+  " can not follow himself");
                 return null;
             }
-            long id=  userService.extractID(request);
-            if(id!=user1id){
-                throw new Exception("Wrong user-unfollow");
-            }
+
             System.out.println("user: "+user1id+  " is now following this user: "+user2id);
             userService.incfol(user1id,user2id);
             return followRepository.insert(follow);
@@ -51,14 +52,15 @@ public class followService {
         }
         long user1id= Long.parseLong(fr.getUserid());
         long user2id = Long.parseLong(fr.getFollowingid());
+        long id=  userService.extractID(request);
+        if(id!=user1id){
+            throw new Exception("Wrong user-unfollow");
+        }
         follow follow=new follow(user1id, user2id);
         boolean check=followRepository.existsBymid(follow.getMid());
         System.out.println(check);
         if(check){
-          long id=  userService.extractID(request);
-          if(id!=user1id){
-              throw new Exception("Wrong user-unfollow");
-          }
+
             System.out.println("user: "+user1id+  " unfollowed this user: "+user2id);
             userService.decfol(user1id,user2id);
             return followRepository.deleteBymid(follow.getMid()).get();

@@ -94,6 +94,9 @@ public class UserService {
                 String imageUrl = IFirebase.getImageUrl(fileName);
                 user.setPhotoURL(imageUrl);
             }
+            else{
+                System.out.println("no photo");
+            }
 
         } catch (Exception e) {
             throw new Exception(e);

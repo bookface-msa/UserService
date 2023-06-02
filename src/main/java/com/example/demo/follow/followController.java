@@ -18,8 +18,8 @@ public class followController {
     private final followRepository followRepository ;
     private final followService followService;
     @GetMapping()
-    public List<follow> getallfollows(@RequestBody followRequest fr ){
-        System.out.println(fr.toString());
+    public List<follow> getallfollows( ){
+       // System.out.println(fr.toString());
         return followService.getAllFollows();
     }
 

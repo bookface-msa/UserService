@@ -35,18 +35,19 @@ private final RabbitTemplate template;
     }
 
     @GetMapping("/id")
-    public User getUserbyid(long id){
+    public User getUserbyid(@RequestParam String id){
 
-        return userservice.getUserbyid(id);
+        return userservice.getUserbyid(Long.parseLong(id));
     }
 
     @GetMapping("/email")
-    public User getUserbyemail(String email) throws Exception {
+    public User getUserbyemail(@RequestParam String email) throws Exception {
+
         return userservice.getUserbyemail(email);
     }
 
     @GetMapping("/username")
-    public User getUserbyusername(String username)  {
+    public User getUserbyusername(@RequestParam String username)  {
         return userservice.getUserbyusername(username);
     }
 
