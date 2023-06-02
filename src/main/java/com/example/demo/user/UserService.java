@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,18 +30,20 @@ public class UserService {
         private final RabbitTemplate template;
         private final FirebaseInterface IFirebase;
         private final followService followService;
+        private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, followRepository followRepositery, JdbcTemplate jdbcTemplate, RabbitTemplate template, FirebaseInterface IFirebase, @Lazy followService followService) {
+    public UserService(UserRepository userRepository, followRepository followRepositery, JdbcTemplate jdbcTemplate, RabbitTemplate template, FirebaseInterface IFirebase, @Lazy followService followService,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.followRepositery = followRepositery;
         this.jdbcTemplate = jdbcTemplate;
         this.template = template;
         this.IFirebase = IFirebase;
         this.followService = followService;
+        this.passwordEncoder=passwordEncoder;
     }
 
     public User getUserbyid(long id){
-        return userRepository.findById(id).orElseThrow(()->new IllegalStateException("getuserbyidexception"));
+        return userRepository.findById(id).orElseThrow(()->new IllegalStateException());
     }
 
     public User getUserbyemail(String email) throws Exception {
@@ -108,7 +111,7 @@ public class UserService {
         user.setFirstname(uuser.getFirstname());
         user.setLastname(uuser.getLastname());
         user.setUsername(uuser.getUsername());
-        user.setPassword(uuser.getPassword());
+        user.setPassword(passwordEncoder.encode(uuser.getPassword()));
 
         Elasticuser userMessage = Elasticuser.builder()
                 .id(user.getId()+"")

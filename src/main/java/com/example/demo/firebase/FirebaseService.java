@@ -59,12 +59,8 @@ public class FirebaseService implements FirebaseInterface {
 
     @Override
     public String getImageUrl(String name) {
-        //moshkelaaaa
         System.out.println(name);
-        //properties.getImageUrl()
-        String s="https://storage.googleapis.com/$%7Bfirebase.msap-4530a-"+name+"%7D/%s";
-      //  return String.format("%s", name);
-        return s;
+        return String.format(properties.getImageUrl(), name);
     }
 
     @Override

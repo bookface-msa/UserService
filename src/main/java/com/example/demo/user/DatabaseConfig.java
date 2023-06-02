@@ -13,8 +13,8 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl("jdbc:postgresql://localhost:5432/scalable");
-        dataSource.setUsername("bookface");
-        dataSource.setPassword("password");
+        dataSource.setUsername("postgres");
+        dataSource.setPassword("718653");
         dataSource.setDriverClassName("org.postgresql.Driver");
         return dataSource;
     }
