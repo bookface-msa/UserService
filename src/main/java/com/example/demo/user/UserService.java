@@ -32,7 +32,11 @@ public class UserService {
         private final followService followService;
         private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, followRepository followRepositery, JdbcTemplate jdbcTemplate, RabbitTemplate template, FirebaseInterface IFirebase, @Lazy followService followService,PasswordEncoder passwordEncoder) {
+
+
+
+    public UserService(UserRepository userRepository, followRepository followRepositery, JdbcTemplate jdbcTemplate, RabbitTemplate template, FirebaseInterface IFirebase, @Lazy followService followService, PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
         this.followRepositery = followRepositery;
         this.jdbcTemplate = jdbcTemplate;
