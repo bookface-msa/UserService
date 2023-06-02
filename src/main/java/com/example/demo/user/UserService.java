@@ -71,34 +71,44 @@ public class UserService {
         } catch (Exception e) {
             throw new Exception(e);
         }
+
+        User returned = userRepository.save(user);
+
+        System.out.println("Id " + returned.getId());
         Elasticuser userMessage = Elasticuser.builder()
-                .id(user.getId()+"")
-                .imageurl(user.getPhotoURL())
-                .bio(user.getBio())
-                .username(user.getUsername())
+                .id(returned.getId()+"")
+                .imageurl(returned.getPhotoURL())
+                .bio(returned.getBio())
+                .username(returned.getUsername())
                 .build();
         template.convertAndSend(mqconfig.EXCHANGE,mqconfig.ROUTING_KEY_CREATE,userMessage);
 
-
-        return userRepository.save(user);
+        return returned;
     }
 
-    public User update(User uuser){
+    public User update(UpdateRequest uuser) throws Exception{
+
         User user=userRepository.findById(uuser.getId()).orElseThrow(()->
                 new IllegalStateException("excupdate")
         );
+
+        try {
+            MultipartFile file = uuser.getFile();
+            if (file != null) {
+                String fileName = IFirebase.save(file);
+                String imageUrl = IFirebase.getImageUrl(fileName);
+                user.setPhotoURL(imageUrl);
+            }
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+
         user.setBio(uuser.getBio());
         user.setEmail(uuser.getEmail());
-        user.setNum_followers(uuser.getNum_followers());
-        user.setNum_following(uuser.getNum_following());
-        user.setNum_likes(uuser.getNum_likes());
         user.setFirstname(uuser.getFirstname());
         user.setLastname(uuser.getLastname());
         user.setUsername(uuser.getUsername());
         user.setPassword(uuser.getPassword());
-        user.setRole(uuser.getRole());
-        user.setPhotoURL(uuser.getPhotoURL());
-
 
         Elasticuser userMessage = Elasticuser.builder()
                 .id(user.getId()+"")
@@ -107,7 +117,6 @@ public class UserService {
                 .username(user.getUsername())
                 .build();
         template.convertAndSend(mqconfig.EXCHANGE,mqconfig.ROUTING_KEY_UPDATE,userMessage);
-
 
         return userRepository.save(user);
     }
@@ -130,8 +139,6 @@ public class UserService {
                 userRepository.delete(getUserbyid(id));
                 template.convertAndSend(mqconfig.EXCHANGE,mqconfig.ROUTING_KEY_DELETE,ids);
             }
-
-
         }
         else {
             System.out.println("user not found");
@@ -147,8 +154,8 @@ public class UserService {
         u2.setNum_followers(new_num_followers);
         int new_num_following = u1.getNum_following()+1;
         u1.setNum_following(new_num_following);
-        this.update(u1);
-        this.update(u2);
+        userRepository.save(u1);
+        userRepository.save(u2);
     }
 
     public void decfol(long user1_id , long user2_id){
@@ -159,8 +166,8 @@ public class UserService {
         u2.setNum_followers(new_num_followers);
         int new_num_following = u1.getNum_following()-1;
         u1.setNum_following(new_num_following);
-        this.update(u1);
-        this.update(u2);
+        userRepository.save(u1);
+        userRepository.save(u2);
     }
     public void handleDeleteUserFollow(long user1_id){
        List<follow> following =  followService.getAllFollowers(user1_id); // list of all users that user1 follows

@@ -3,10 +3,13 @@ package com.example.demo.user;
 //import com.example.demo.follow.followRepository;
 import com.example.demo.Elastic.Elasticuser;
 import com.example.demo.Elastic.mqconfig;
+import com.example.demo.auth.AuthenticationResponse;
+import com.example.demo.auth.RegisterRequest;
 import com.example.demo.follow.followRepository;
 import com.example.demo.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.firebase.FirebaseInterface;
@@ -53,7 +56,7 @@ private final RabbitTemplate template;
     }
 
     @PutMapping("/update")
-    public User update(@RequestBody User uuser){
+    public User update(@ModelAttribute UpdateRequest uuser) throws Exception{
         return userservice.update(uuser);
     }
 
