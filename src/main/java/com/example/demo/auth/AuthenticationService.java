@@ -36,7 +36,7 @@ public class AuthenticationService {
                 .build();
     var user=us.create(ure);
     var jwtToken=js.generateToken(user);
-    return AuthenticationResponse.builder().token(jwtToken).build();
+    return AuthenticationResponse.builder().token(jwtToken).id(user.getId()+"").build();
     }
 
     public AuthenticationResponse login(AuthenticationRequest request) throws Exception {
@@ -53,7 +53,7 @@ public class AuthenticationService {
            User user=ur.findByUsername(request.getUsername()).get();
            System.out.println(user.toString());
             var jwtToken=js.generateToken(user);
-            return AuthenticationResponse.builder().token(jwtToken).build();
+            return AuthenticationResponse.builder().token(jwtToken).id(user.getId()+"").build();
       } catch (Exception e) {
             System.out.println(e);
             return AuthenticationResponse.builder().token("mafesh token").build();
