@@ -2,10 +2,13 @@ package com.example.demo.user;
 
 import com.example.demo.Elastic.Elasticuser;
 import com.example.demo.Elastic.mqconfig;
+import com.example.demo.config.jwtService;
 import com.example.demo.firebase.FirebaseInterface;
 import com.example.demo.follow.follow;
 import com.example.demo.follow.followRepository;
 import com.example.demo.follow.followService;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +35,12 @@ public class UserService {
         private final followService followService;
         private final PasswordEncoder passwordEncoder;
 
+        private final jwtService jwtService;
 
 
 
-    public UserService(UserRepository userRepository, followRepository followRepositery, JdbcTemplate jdbcTemplate, RabbitTemplate template, FirebaseInterface IFirebase, @Lazy followService followService, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository, followRepository followRepositery, JdbcTemplate jdbcTemplate, RabbitTemplate template, FirebaseInterface IFirebase, @Lazy followService followService, PasswordEncoder passwordEncoder,@Lazy jwtService jwtService) {
 
         this.userRepository = userRepository;
         this.followRepositery = followRepositery;
@@ -44,8 +49,16 @@ public class UserService {
         this.IFirebase = IFirebase;
         this.followService = followService;
         this.passwordEncoder=passwordEncoder;
+        this.jwtService=jwtService;
     }
 
+
+    public long extractID(HttpServletRequest request){
+        String authhead= request.getHeader("Authorization");
+        String jwt=authhead.substring(7);//jwt token after "bearer "
+        String id=jwtService.extractId(jwt);
+        return Long.parseLong(id);
+    }
     public User getUserbyid(long id){
         return userRepository.findById(id).orElseThrow(()->new IllegalStateException());
     }
@@ -93,12 +106,15 @@ public class UserService {
         return returned;
     }
 
-    public User update(UpdateRequest uuser) throws Exception{
+    public User update(UpdateRequest uuser, HttpServletRequest request) throws Exception{
 
         User user=userRepository.findById(uuser.getId()).orElseThrow(()->
                 new IllegalStateException("excupdate")
         );
-
+        long id2=extractID(request);
+        if(user.getId()!=id2){
+            throw new Exception("wrong user-update");
+        }
         try {
             MultipartFile file = uuser.getFile();
             if (file != null) {
@@ -128,11 +144,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void delete(long id ){
+    public void delete(long id , HttpServletRequest request) throws Exception {
         String ids=id+"";
 
         User u=this.getUserbyid(id);
         if(u!=null){
+            long id2=extractID(request);
+            if(id!=id2){
+                throw new Exception("wrong user-delete");
+            }
             if(u.getPhotoURL() != null) {
                 String imageUrl = u.getPhotoURL();
                 try {

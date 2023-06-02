@@ -7,6 +7,7 @@ import com.example.demo.auth.AuthenticationResponse;
 import com.example.demo.auth.RegisterRequest;
 import com.example.demo.follow.followRepository;
 import com.example.demo.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +51,14 @@ private final RabbitTemplate template;
     }
 
     @DeleteMapping("/delete")
-    public void delete(@RequestParam long id ){
-         userservice.delete(id);
+    public void delete(@RequestParam long id , HttpServletRequest request) throws Exception {
+         userservice.delete(id,request);
 
     }
 
     @PutMapping("/update")
-    public User update(@ModelAttribute UpdateRequest uuser) throws Exception{
-        return userservice.update(uuser);
+    public User update(@ModelAttribute UpdateRequest uuser, HttpServletRequest request) throws Exception{
+        return userservice.update(uuser,request);
     }
 
 

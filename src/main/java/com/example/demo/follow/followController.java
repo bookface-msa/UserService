@@ -3,6 +3,7 @@ package com.example.demo.follow;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.google.firebase.database.annotations.NotNull;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +24,15 @@ public class followController {
     }
 
     @PostMapping()
-    public follow follow(@RequestBody  followRequest fr ){
+    public follow follow(@RequestBody  followRequest fr, HttpServletRequest request) throws Exception {
         System.out.println(fr.toString());
-        return followService.follow(fr);
+        return followService.follow(fr,request);
     }
 
     @DeleteMapping()
-    public follow unfollow(@RequestBody followRequest fr ){
+    public follow unfollow(@RequestBody followRequest fr,HttpServletRequest request ) throws Exception {
         System.out.println(fr.toString());
-        return followService.unfollow(fr);
+        return followService.unfollow(fr,request);
     }
 
 }

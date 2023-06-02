@@ -23,7 +23,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
-            ){
+            ) throws Exception {
+        System.out.println(request.toString());
         return ResponseEntity.ok(as.login(request));
     }
 }

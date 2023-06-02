@@ -39,15 +39,29 @@ public class AuthenticationService {
     return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request){
+    public AuthenticationResponse login(AuthenticationRequest request) throws Exception {
+        System.out.println(1);
+        try{
   am.authenticate(new UsernamePasswordAuthenticationToken(
           request.getUsername(),request.getPassword()
-  ));
-  var user=ur.findByUsername(request.getUsername()).orElseThrow(()->{
-      throw new UsernameNotFoundException("user not found");
-  });
- var jwtToken=js.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+  ));}
+        catch (Exception e){
+            System.out.println(e);
+            throw new Exception(e);
+        }
+        try {
+           User user=ur.findByUsername(request.getUsername()).get();
+           System.out.println(user.toString());
+            var jwtToken=js.generateToken(user);
+            return AuthenticationResponse.builder().token(jwtToken).build();
+      } catch (Exception e) {
+            System.out.println(e);
+            return AuthenticationResponse.builder().token("mafesh token").build();
+             //   throw new Exception("user not found");
+      }
+
+
+
 
 
     }
