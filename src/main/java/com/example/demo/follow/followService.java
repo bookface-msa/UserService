@@ -46,6 +46,9 @@ public class followService {
     }
 
     public follow unfollow(followRequest fr , HttpServletRequest request) throws Exception {
+        if(userService.isexpired(request)){
+            throw new Exception("token expired");
+        }
         long user1id= Long.parseLong(fr.getUserid());
         long user2id = Long.parseLong(fr.getFollowingid());
         follow follow=new follow(user1id, user2id);
@@ -66,7 +69,7 @@ public class followService {
         return null;
     }
 
-    public follow unfollow(long user1id,long user2id ){
+    public follow unfollow2(long user1id,long user2id ){
 
         follow follow=new follow(user1id, user2id);
         boolean check=followRepository.existsBymid(follow.getMid());

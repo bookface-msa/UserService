@@ -59,6 +59,12 @@ public class UserService {
         String id=jwtService.extractId(jwt);
         return Long.parseLong(id);
     }
+
+    public boolean isexpired(HttpServletRequest request){
+        String authhead= request.getHeader("Authorization");
+        String jwt=authhead.substring(7);//jwt token after "bearer "
+        return jwtService.isTokenExpired(jwt);
+    }
     public User getUserbyid(long id){
         return userRepository.findById(id).orElseThrow(()->new IllegalStateException());
     }
@@ -78,6 +84,7 @@ public class UserService {
     }
 
     public User create( userRequest request ) throws Exception {
+
         User user=new User(request);
 
         try {
@@ -108,6 +115,10 @@ public class UserService {
 
     public User update(UpdateRequest uuser, HttpServletRequest request) throws Exception{
 
+
+       if(isexpired(request)){
+           throw new Exception("token expired");
+       }
         User user=userRepository.findById(uuser.getId()).orElseThrow(()->
                 new IllegalStateException("excupdate")
         );
@@ -145,6 +156,9 @@ public class UserService {
     }
 
     public void delete(long id , HttpServletRequest request) throws Exception {
+        if(isexpired(request)){
+            throw new Exception("token expired");
+        }
         String ids=id+"";
 
         User u=this.getUserbyid(id);
@@ -203,11 +217,11 @@ public class UserService {
         System.out.println(followers);
 
         for(follow f : following){
-            followService.unfollow(user1_id, f.getFollowingid());
+            followService.unfollow2(user1_id, f.getFollowingid());
         }
 
         for(follow f : followers){
-           followService.unfollow(f.getUserid(), user1_id);
+           followService.unfollow2(f.getUserid(), user1_id);
         }
 
 
