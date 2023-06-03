@@ -1,0 +1,6 @@
+{
+    "name": "user",
+    "port": "8080",
+    "maxInstanceCount": 2,
+    "deps": []
+}

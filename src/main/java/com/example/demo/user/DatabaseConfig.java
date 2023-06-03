@@ -9,12 +9,14 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DatabaseConfig {
+
+    
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/scalable");
+        dataSource.setUrl("jdbc:postgresql://database-user:5432/scalable");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("718653");
+        dataSource.setPassword("guest");
         dataSource.setDriverClassName("org.postgresql.Driver");
         return dataSource;
     }
