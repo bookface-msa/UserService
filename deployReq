@@ -1,6 +1,6 @@
 curl \
-    -F file=@target/demo-0.0.1-SNAPSHOT.jar \
-    -F propsFile=@src/main/resources/application.properties \
+    -F file=@target/dep-0.0.1-SNAPSHOT.jar \
+    -F propsFile=@production.properties \
     -F data='{
         "name": "user",
         "port": "8080",

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/user/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -16,6 +16,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @ModelAttribute RegisterRequest request
     ) throws Exception {
+        System.out.println("HEEEEER \n\n\n");
        return ResponseEntity.ok(as.register(request));
     }
 

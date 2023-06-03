@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/v1/user")
+@RequestMapping(path="/user/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
 private final UserRepository userRepository;

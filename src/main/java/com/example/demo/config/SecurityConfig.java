@@ -27,7 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
                  .cors(cors->cors.disable())
                  .authorizeHttpRequests((authz) -> authz
                          .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                         .requestMatchers("/api/v1/auth/register","/api/v1/auth/login")//white list (register,login)
+                         .requestMatchers("/user/api/v1/auth/register","/user/api/v1/auth/login")//white list (register,login)
                          .permitAll()
                          .anyRequest()//all other requests
                          .authenticated()

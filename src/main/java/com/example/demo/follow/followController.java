@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/follow")
+@RequestMapping("/user/api/follow")
 @AllArgsConstructor
 public class followController {
     private UserRepository userRepository;
